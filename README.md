@@ -83,6 +83,6 @@ Building an HR and Payroll ERP for Saudi enterprises exposes four sharp intersec
 
 <div align="center">
 
-[Portfolio](https://abdulqader-alshihabi.github.io/) &nbsp;|&nbsp; Built by **Abdulqader Alshihabi**
+[Portfolio](https://abdulqader-alshihabi.github.io/) &nbsp;|&nbsp; [LinkedIn](https://www.linkedin.com/in/abdulqader-alshihabi-859b19260/) &nbsp;|&nbsp; Built by **Abdulqader Alshihabi**
 
 </div>
