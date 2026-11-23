@@ -1,114 +1,88 @@
-# Saaed (ساعد) - Enterprise HR & Payroll ERP Suite
+<div align="center">
 
-[![Architecture](https://img.shields.io/badge/Architecture-Full--Stack%20Decoupled-blue?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
-[![Frontend](https://img.shields.io/badge/Frontend-React%2019%20%7C%20TypeScript-61DAFB?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
-[![Backend](https://img.shields.io/badge/Backend-Django%205%20%7C%20DRF-092E20?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
-[![Database](https://img.shields.io/badge/Database-PostgreSQL%2015-336791?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
-[![Security](https://img.shields.io/badge/Security-Fernet%20PII%20Encryption%20at%20Rest-red?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
-[![Compliance](https://img.shields.io/badge/Compliance-Saudi%20Labor%20Law%20%7C%20WPS-006C35?style=for-the-badge)](https://github.com/Abdulqader-Alshihabi/Sync-ERP-HR)
+# Saaed (ساعد) — Enterprise Arabic-First Saudi HR & Payroll ERP
 
-Category: Enterprise Resource Planning (ERP) & Human Resource Management System (HRMS)  
-Project Scope: Enterprise Summer Internship & Corporate Automation  
-Lead Full-Stack Software Engineer: Abdulqader Alshihabi  
+**Production Full-Stack HR, Attendance, Nitaqat Hiring Compliance, Article 84 EOS Gratuity & Encrypted Payroll ERP (`React 19`, `Django 5.1`, `PostgreSQL 16`, `Redis 7`, `Fernet PII + Blind Indexing`)**
 
----
+[![Frontend](https://img.shields.io/badge/React_19_+_TanStack_v5-RTL_Arabic_ERP-3B82F6?style=for-the-badge&logo=react&logoColor=61DAFB)](#full-stack-enterprise-architecture)
+[![Backend](https://img.shields.io/badge/Django_5.1_+_DRF_3.17-14_Domain_Apps-092E20?style=for-the-badge&logo=django&logoColor=white)](#full-stack-enterprise-architecture)
+[![Security](https://img.shields.io/badge/Fernet_PII_+_HMAC_Blind_Index-DC2626?style=for-the-badge)](#solving-saudi-labor-law--pii-encryption-problems)
+[![Compliance](https://img.shields.io/badge/Saudi_Labor_Law-GOSI_%C2%B7_WPS_%C2%B7_Nitaqat_%C2%B7_Art84-059669?style=for-the-badge)](#payroll-nitaqat--bola-governance)
 
-## Commercial Notice and Data Protection
-
-> [!IMPORTANT]
-> Proprietary Architecture Notice:  
-> This repository serves as an Architectural Case Study and Technical Specification for the Saaed (ساعد) Enterprise HR & Payroll ERP platform. In compliance with commercial non-disclosure agreements (NDA), banking security protocols, and employee data privacy standards, production database dumps, proprietary payroll spreadsheets, cryptographic secret keys, and company server configurations are securely maintained in isolated enterprise infrastructure.
+[Problems Solved](#solving-saudi-labor-law--pii-encryption-problems) &nbsp;|&nbsp; [Architecture](#full-stack-enterprise-architecture) &nbsp;|&nbsp; [Payroll & Compliance](#payroll-nitaqat--bola-governance) &nbsp;|&nbsp; [Extensibility](#enterprise-extensibility-seams)
 
 ---
 
-## Executive Summary
+| System Dimension | Verified Implementation | Enterprise Guarantee |
+| :--- | :--- | :--- |
+| **Client Stack** | `React 19.0.0`, `TS 5.6.3`, `Vite 6.0`, `TanStack Router/Query v5` | Arabic-first `i18next` RTL UI + `beforeLoad` guards + single-flight JWT refresh |
+| **Server Stack** | `Python 3.12`, `Django 5.1.15`, `DRF 3.17.1`, `drf-spectacular` | **14 modular Django apps** + `selfservice` mounted cleanly under `/api/v1/` |
+| **Data & Revocation** | **`PostgreSQL 16`** + **`Redis 7`** | Row locks (`SELECT FOR UPDATE`), Redis `jwt_denylist:{jti}` & `tokens_valid_from` |
+| **PII & Vault Crypto** | `cryptography.fernet 49.0.0` + `Argon2` | Mandatory `FIELD_ENCRYPTION_KEY`, keyed `blind_index`, `EncryptedFileSystemStorage` |
+| **Saudi Statutory Math** | `Decimal('0.01')` `ROUND_HALF_UP` + `openpyxl 3.1.5` | Two-track GOSI (`45K SAR` cap), Art 107 OT floor, Art 84 EOS, in-memory Al Rajhi `.xlsm` |
+| **CI Quality Gates** | `.github/workflows/ci.yml` | `ruff`, `pytest` on PG 16, `django-migration-linter 6.0.0`, **`diff-cover >=80%`** |
 
-Saaed (ساعد) is an Arabic-first enterprise Human Resources and ERP platform engineered to streamline corporate workforce administration, automated payroll calculation, regulatory compliance, and cross-departmental approval workflows.
-
-Built with a decoupled architecture featuring a React 19 Single Page Application (SPA) communicating over a secure REST API with a Django 5 backend running across 15 modular sub-applications and a PostgreSQL database, the system enforces end-to-end data integrity, field-level encryption, and strict role-based access controls.
-
-### Key Capabilities
-- **Saudi Labor Law Automation**: Automated calculation of General Organization for Social Insurance (GOSI) deductions, End-of-Service (EOS) gratuity accruals, and statutory overtime rates.
-- **Wages Protection System (WPS) & Banking Automation**: Dynamic generation and validation of bank-compliant payroll workbooks (including Al Rajhi Bank WPS formats).
-- **Unified Request Inbox & Polymorphic Assignment**: Multi-tier request routing handling leaves, financial expenses, salary certificates, promotions, transfers, disciplinary records, and resignations.
-- **Enterprise PII Encryption at Rest**: Sensitive employee records (national IDs, bank IBANs, salary structures) encrypted using symmetric Fernet keys before database persistence.
-- **Comprehensive Security & Audit Trails**: Hardened against penetration vulnerabilities (IDOR, CSRF, Session Fixation, Privilege Escalation) with immutable event logging.
+</div>
 
 ---
 
-## System Architecture
+## Solving Saudi Labor Law & PII Encryption Problems
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Client-Side Web Application (React 19 + Vite)            │
-│  - Navigation: TanStack Router (Type-Safe, Search-Param Validation)    │
-│  - State & Caching: TanStack React Query v5 (Optimistic Updates)       │
-│  - Design System: Tailwind CSS v4, Lucide Icons, Modern Dark/Light     │
-│  - Localization: Native Arabic-first (RTL) with modular i18n support   │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼  HTTP / REST API (/api/v1/*)
-┌────────────────────────────────────────────────────────────────────────┐
-│                 Django 5 & Django REST Framework (DRF)                 │
-│  - Authentication: JWT with refresh rotation & secure HTTP-only cookies │
-│  - Access Control: Role-Based (RBAC) & Sector-Level Authorization      │
-│  - Modules (15+ Apps): Employees, Attendance, Payroll, Leaves,         │
-│                        Documents, Performance, Approvals, Reports      │
-│  - Crypto Layer: Cryptography Fernet for PII Field Encryption          │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │
-                                   ▼  Relational Persistence
-┌────────────────────────────────────────────────────────────────────────┐
-│                   PostgreSQL 15 Enterprise Database                    │
-│  - Schema: Normalized tables with polymorphic metadata JSON payloads   │
-│  - Integrity: Strict foreign-key cascades, check constraints, & indexes│
-│  - Audit Logging: Immutable tracking for all financial transactions    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+Building an HR and Payroll ERP for Saudi enterprises exposes four sharp intersections between cryptography, statutory compliance, and access isolation: non-deterministic ciphertext breaks relational uniqueness checks, evolving `2024 -> 2028` GOSI brackets must never drift under floating-point arithmetic, self-approval during payroll disbursement causes severe fraud exposure, and plaintext WPS sheets written to `MEDIA_ROOT` leak sensitive IBANs onto shared volumes.
+
+<div align="center">
+  <img src="assets/diagrams/diagram-1-problems-solved.png" alt="Four Cryptographic and Statutory Saudi Labor Law Challenges Solved in Saaed ERP" width="100%" />
+</div>
+
+1. **Searchable Encrypted PII Without Weakening Ciphertext (`common/encryption.py`):** `EncryptedCharField` applies non-deterministic `Fernet` (AES-128-CBC + HMAC) across `EmployeePersonal.{phone,national_id,address}` and `BankInfo.iban` using a mandatory isolated `FIELD_ENCRYPTION_KEY` (`common.config_validation` forbids fallback to Django's `SECRET_KEY`). To enforce `UNIQUE` constraints on encrypted IDs without storing plaintext or deterministic encryption, Saaed persists domain-separated keyed HMAC-SHA256 tokens (`national_id_bidx` via `b"blind-index:"`). An atomic `rotate_field_encryption` management command re-encrypts DB columns, disk vaults (`EncryptedFileSystemStorage` with magic-byte checks & 10MB caps), and blind indexes together.
+2. **Exact Saudi Payroll & Article 107 Overtime Protection (`payroll/services/engine.py`):** Computes all financial ledger figures with `Decimal('0.01')` `ROUND_HALF_UP` and `split_largest_remainder`, implements Two-Track GOSI (`45,000 SAR` wage cap, phased annual step-ups from `2024-07-03` through `2028-07-01`, `0%/2%` expat occupational hazard), and enforces an unbypassable **Article 107 statutory floor** inside `compute_overtime_pay()`.
+3. **Maker-Checker Payroll & In-Memory Al Rajhi `.xlsm` (`build_wps_csv`):** Acquires PostgreSQL `SELECT FOR UPDATE` locks over cycles (`draft -> approved -> paid`), compares `cycle.approved_by_id != disburser.pk` directly (intentionally bypassing `super_admin` wildcard permissions), and renders Al Rajhi `.xlsm` / WPS CSV streams solely in RAM with `common.exports.safe_cell` formula-injection sanitization—never writing IBANs to disk.
 
 ---
 
-## Core Technical Modules Implemented
+## Full-Stack Enterprise Architecture
 
-### 1. Saudi Payroll Engine & WPS Banking Integration
-- Automates monthly gross-to-net salary reconciliations factoring in base pay, housing allowances, transport stipends, unpaid leave deductions, and overtime matrices.
-- Complies with Saudi GOSI calculation rules for Saudi nationals and expatriate workforces.
-- Generates verified Microsoft Excel and CSV payroll data matching Saudi Wages Protection System (WPS) standards and commercial bank ingestion layouts.
+<div align="center">
+  <img src="assets/diagrams/diagram-2-architecture.png" alt="React 19 RTL SPA, Django 5.1 (14 Apps), Redis 7 JWT Revocation and Encrypted Storage Architecture" width="100%" />
+</div>
 
-### 2. Unified Request Engine & Assignment Queue
-- Implemented a unified `hr_requests` architecture utilizing polymorphic JSON payloads (`metadata`) to eliminate schema duplication across leave, expense, promotion, and disciplinary requests.
-- Multi-tier assignment matrix enforcing strict permission boundaries:
-  - `HR Manager`: Oversees entire organization queues, assigns tasks, delegates approvals, and views executive reports.
-  - `HR Specialist`: Handles specifically assigned requests and tasks.
-  - `Line Manager`: Submits and authorizes requests on behalf of direct reports.
-  - `Employee`: Self-service portal for leave submissions, document requests, and tracking.
+### Fail-Closed Security & Zero-Leak Production Posture
 
-### 3. PII Security & Pentest Hardening
-- Integrated symmetric field-level encryption using Python `cryptography.fernet`. Personal Identifiable Information (PII) including national identification numbers and bank account numbers are stored encrypted at rest.
-- Successfully remediated security penetration test findings, enforcing strict object-level permission verification on all API endpoints to eliminate Insecure Direct Object References (IDOR).
-- Rate-limiting and CSRF protection on all mutating endpoints.
+- **Immediate Revocation & Constant-Time Login:** `UsernameOrEmailOrEmployeeIdBackend` executes constant-time dummy hashes against unknown users (`Argon2PasswordHasher`, 10-character minimum). `SafeJWTAuthentication` validates short-lived Bearer JWTs (`15m` access / `7d` rotating refresh) against Redis `jwt_denylist:{jti}` and per-user `tokens_valid_from`, severing offboarded employee sessions immediately on termination.
+- **Redacted 14-Model Audit Trail (`AuditMiddleware`):** Logs mutations into `AuditLog` and `ActivityLog` while automatically redacting `EncryptedCharField`, `*_bidx`, and sensitive keys to `"***"`. `prod.py` fails closed at startup if default keys, non-Redis caches (`LocMemCache`), or seed flags are detected, and hides `/admin/` behind `AdminIPRestrictionMiddleware` (`404` stealth).
 
 ---
 
-## Technology Stack
+## Payroll, Nitaqat & BOLA Governance
 
-| Layer | Technologies and Libraries |
-| :--- | :--- |
-| **Frontend Framework** | React 19, TypeScript, Vite |
-| **Frontend State & Router** | TanStack Router, TanStack React Query v5 |
-| **Styling & UI Tokens** | Tailwind CSS v4, Lucide Icons, Radix Primitives |
-| **Backend Framework** | Django 5.x, Django REST Framework (DRF), Python 3.11+ |
-| **Database & ORM** | PostgreSQL 15, Django ORM |
-| **Cryptography & Security** | Cryptography (Fernet symmetric encryption), SimpleJWT |
-| **DevOps & Containers** | Docker, Docker Compose, Nginx |
-| **Testing & Quality** | Vitest (Frontend), Django TestCase (Backend), ESLint, Prettier |
+<div align="center">
+  <img src="assets/diagrams/diagram-3-compliance-payroll.png" alt="Saudi GOSI Step-Ups, Article 84 EOS Gratuity, MHRSD Nitaqat Hiring Gate and BFS BOLA Scoping" width="100%" />
+</div>
+
+- **MHRSD Nitaqat Weighted Hiring Gate (`hr/services/saudization.py`, `recruitment/services/nitaqat_gate.py`):** Evaluates salary-weighted Saudization credits (`>=4,000 SAR: 1.0`, `3,000–<4,000 SAR: 0.5`, Qiwa contract gate, `4x` disability weight capped at `10%`), blocking new expatriate requisitions via `assert_can_open_expat_requisition` whenever company headcount falls below `RECRUITMENT_SAUDIZATION_FLOOR` and bounding candidate offers strictly within `[salary_min, salary_max]`.
+- **Article 84 End-of-Service & 3-Department Clearance (`offboarding/services/clearance.py`):** Calculates statutory severance across `basic + housing + transport` (`0.5` mo/yr first 5 years, `1.0` mo/yr beyond, resignation tiers `<2y: 0`, `2–5y: 1/3`, `5–10y: 2/3`, `>=10y: 1.0`), requires row-locked approval across **IT, Finance, and HR**, enforces an independent Maker-Checker settler distinct from all three department signers, deactivates employee status, and revokes live JWTs.
+- **Bounded Org-Tree BOLA Isolation (`common/scoping.py`, `reports_engine.py`):** Isolates manager views across `OrgPosition` hierarchies using bounded BFS (`DEFAULT_MANAGER_SCOPE_MAX_DEPTH = 2`, `confine_sector = True`), locks sensitive exports behind `REPORTS_READ_SENSITIVE`, derives cache keys strictly server-side (`REPORTS_MAX_ROWS = 1,000`), and blocks self-approval in polymorphic `ApprovalWorkflow` chains.
 
 ---
 
-## Engineering Credits
+## Enterprise Extensibility Seams
 
-**Abdulqader Alshihabi**  
-Computer Science Graduate | Software & AI Engineer  
-- Portfolio: [https://abdulqader-alshihabi.github.io/](https://abdulqader-alshihabi.github.io/)  
-- GitHub: [@Abdulqader-Alshihabi](https://github.com/Abdulqader-Alshihabi)  
-- Email: [abdulqader.moh.2003@gmail.com](mailto:abdulqader.moh.2003@gmail.com)  
+<div align="center">
+  <img src="assets/diagrams/diagram-4-extensibility-seams.png" alt="Four Extensibility Seams: Namespace Versioning, SystemSetting JSON Policies, ApprovalWorkflow and Channel Adapters" width="100%" />
+</div>
+
+1. **Frozen Versioned Routers (`core/api_v1.py`):** Prefix-free domain `urls.py` attach under `NamespaceVersioning` (`/api/v1/`), enabling `/api/v2/` endpoints cleanly without breaking ERP web clients.
+2. **Runtime Statutory Policy Overrides (`SystemSetting`):** Updating GOSI brackets, Nitaqat sector thresholds, or expiry alert windows takes one database configuration change without modifying core calculation code.
+3. **Config-Driven Workflows & Roles (`ApprovalWorkflow`, `RoleCapability`, `HRAssignment`):** Approval sequences, conditional `when` steps, role permissions, and temporary manager delegations configure dynamically.
+4. **Swappable Notification Channels (`NOTIFICATION_SMS_BACKEND`):** SMS/OTP dispatch abstracts behind a narrow provider interface alongside `Caddy` TLS staging & Docker Compose deployments.
+
+---
+
+> [!NOTE]
+> Proprietary Saaed ERP source code and client database schemas are kept private under NDA; this showcase preserves the verified engineering architecture and security controls only.
+
+<div align="center">
+
+[Portfolio](https://abdulqader-alshihabi.github.io/) &nbsp;|&nbsp; Built by **Abdulqader Alshihabi**
+
+</div>
